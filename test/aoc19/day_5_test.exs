@@ -17,6 +17,10 @@ defmodule Day5Test do
       assert Day5.add([1, 3, 4, 1, 99], [[3, 4], 1], :position_mode) == [1, 100, 4, 1, 99]
     end
 
+    test "multiply" do
+      assert Day5.multiply([2, 3, 4, 1, 99], [[3, 4, ], 1], :position_mode) == [2, 99, 4, 1, 99]
+    end
+
   end
 
 end
