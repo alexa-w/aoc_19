@@ -3,6 +3,17 @@ defmodule Day5 do
 
   @type t :: %Day5{sequence: [integer], input: integer, output: [integer], pointer: integer, length: integer}
 
+  @instruction_lengths [
+    "01": 4,
+    "02": 4,
+    "03": 2,
+    "04": 2,
+    "05": 3,
+    "06": 3,
+    "07": 4,
+    "08": 4
+  ]
+
   def marshal(sequence, input) do
     sequence
     |> Day5.Parse.parse
@@ -17,12 +28,11 @@ defmodule Day5 do
   def slice_instruction(%Day5{sequence: sequence, pointer: pointer}) do
     instruction = sequence
     |> Enum.at(pointer)
-    |> Integer.mod(10)
-    Enum.slice(sequence, pointer, get_length(instruction))
-  end
-
-  def get_length(instruction) do
-    if instruction < 3, do: 4, else: 2
+    |> Integer.mod(100)
+    |> Integer.to_string
+    |> String.pad_leading(2, "0")
+    |> String.to_atom
+    Enum.slice(sequence, pointer, @instruction_lengths[instruction])
   end
 
   @spec solve(Day5.t()) :: [integer]

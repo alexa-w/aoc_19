@@ -20,6 +20,7 @@ defmodule Day5.Operations do
     case func do
       :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2, length: length}
       :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2, length: length}
+      # :jump_if_true -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_true(pointer, params)}
     end
   end
 
