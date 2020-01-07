@@ -1,14 +1,16 @@
 defmodule Day5.Instruction do
   defstruct [:operation, :params]
 
+  alias Day5.Operations, as: Operations
+
   @modes_map %{
     48 => :position,
     49 => :immediate
   }
 
-  @operations ["01": :+, "02": :*, "03": :store, "04": :output]
+  @operations ["01": {Kernel, :+}, "02": {Kernel, :*}, "03": {Operations, :store}, "04": {Operations, :output}]
 
-  def handle_modes({modes, operation}) do
+  defp handle_modes({modes, operation}) do
     {
       Enum.map(String.to_charlist(modes), &(@modes_map[&1])),
       operation
