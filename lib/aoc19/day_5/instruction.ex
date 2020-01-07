@@ -12,7 +12,10 @@ defmodule Day5.Instruction do
 
   defp handle_modes({modes, operation}) do
     {
-      Enum.map(String.to_charlist(modes), &(@modes_map[&1])),
+      modes
+      |> String.reverse
+      |> String.to_charlist
+      |> Enum.map(&(@modes_map[&1])),
       operation
     }
   end

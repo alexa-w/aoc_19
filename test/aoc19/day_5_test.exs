@@ -11,25 +11,26 @@ defmodule Day5Test do
   describe "output" do
     @describetag :acceptance
 
+    # assert(Day5.solve("1002, 7, 5, 10, 3, 4, 101, -5, 2, "))
   end
 
   describe "instruction" do
     @describetag :unit
 
     test "output" do
-      assert Instruction.handle_instruction([1002, 1, 3, 2]) == %Instruction{
+      assert Instruction.handle_instruction([1102, 1, 3, 2]) == %Instruction{
         operation: {Kernel, :*},
         params: [
-          {1, :position},
+          {1, :immediate},
           {3, :immediate},
           {2, :position}
         ]
       }
 
-      assert Instruction.handle_instruction([103, 5]) == %Instruction{
+      assert Instruction.handle_instruction([3, 5]) == %Instruction{
         operation: {Operations, :store},
         params: [
-          {5, :immediate}
+          {5, :position}
         ]
       }
     end
@@ -47,19 +48,50 @@ defmodule Day5Test do
     @describetag :unit
 
     test "add" do
-      assert Operations.do_operation([1, 3, 4, 1, 99], %Instruction{
+      assert Operations.do_operation(%Day5{sequence: [1, 3, 4, 1, 99], input: 0, pointer: 4}, %Instruction{
         operation: {Kernel, :+},
         params: [
           {3, :position},
           {4, :position},
           {1, :position}
         ]
-      }) == [1, 100, 4, 1, 99]
+      }) == %Day5{sequence: [1, 100, 4, 1, 99], input: 0, pointer: 8}
     end
 
-    # test "multiply" do
-      # assert Operations.arithmetic([2, 3, 4, 1, 99], :*, [[3, 4, ], 1], :position_mode) == [2, 99, 4, 1, 99]
-    # end
-  end
+    test "multiply" do
+      assert Operations.do_operation(%Day5{sequence: [102, 3, 4, 1, 99], input: 0, pointer: 0}, %Instruction{
+        operation: {Kernel, :*},
+        params: [
+          {3, :immediate},
+          {4, :position},
+          {1, :position}
+        ]
+      }) == %Day5{sequence: [102, 297, 4, 1, 99], input: 0, pointer: 4}
+    end
 
+    test "store" do
+      assert Operations.do_operation(%Day5{sequence: [3, 2, 99], input: 2, pointer: 2}, %Instruction{
+        operation: {Operations, :store},
+        params: [
+          {2, :position}
+        ]
+      }) == %Day5{sequence: [3, 2, 2], input: 2, pointer: 4}
+    end
+
+    test "output" do
+      assert Operations.do_operation(%Day5{sequence: [4, 2, 0, 99], input: 0, pointer: 0}, %Instruction{
+        operation: {Operations, :output},
+        params: [
+          {2, :position}
+        ]
+      }) == %Day5{sequence: [4, 2, 0, 99], input: 0, output: [0], pointer: 2}
+
+      assert Operations.do_operation(%Day5{sequence: [4, 2, 0, 99], input: 0, output: [0], pointer: 0}, %Instruction{
+        operation: {Operations, :output},
+        params: [
+          {2, :position}
+        ]
+      }) == %Day5{sequence: [4, 2, 0, 99], input: 0, output: [0, 0], pointer: 2}
+    end
+  end
 end

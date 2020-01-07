@@ -1,18 +1,26 @@
 defmodule Day5.Operations do
   alias Day5.Instruction, as: Instruction
+  alias Day5.Operations, as: Operations
 
   defmacro apply_operation(module, operation, args) do
     quote do: apply(unquote(module), unquote(operation), unquote(args))
   end
 
-  @spec do_operation(list(integer()), Instruction.t()) :: [integer()]
-  def do_operation(sequence, %Instruction{operation: {module, func}, params: params}) do
-    apply_operation(
+  @spec do_operation(Day5.t(), Instruction.t()) :: Day5.t()
+  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer}, %Instruction{operation: {module, func}, params: params}) when module == Kernel do
+    result = apply_operation(
       module,
       func,
       handle_params(Enum.drop(params, -1), sequence)
     )
-    |> handle_result(sequence, List.last(params))
+    %Day5{sequence: handle_result(result, sequence, List.last(params)), input: input, output: output, pointer: pointer + 4}
+  end
+
+  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer}, %Instruction{operation: {module, func}, params: [{verb, _}]}) when module == Operations do
+    case func do
+      :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2}
+      :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2}
+    end
   end
 
   def handle_result(result, sequence, {verb, _}) do
@@ -32,10 +40,5 @@ defmodule Day5.Operations do
     :position -> Enum.at(sequence, val)
     :immediate -> val
     end
-  end
-
-
-  def store(sequence, [param, input]) do
-    {:ok}
   end
 end
