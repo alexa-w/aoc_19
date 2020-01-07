@@ -11,7 +11,7 @@ defmodule Day5Test do
   describe "output" do
     @describetag :acceptance
 
-    assert(Day5.solve("1002, 7, 5, 10, 3, 4, 101, -5, 2, 1, 4, 1, 4, 4, 99, 103, 2, 4, 9", 0)) == [0, 0]
+    assert Day5.marshal("1002,7,5,3,3,4,101,-5,2,1,4,1,4,4,99,103,2,4,9", 0) == [0, 0]
   end
 
   describe "instruction" do

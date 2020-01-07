@@ -7,19 +7,19 @@ defmodule Day5.Operations do
   end
 
   @spec do_operation(Day5.t(), Instruction.t()) :: Day5.t()
-  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer}, %Instruction{operation: {module, func}, params: params}) when module == Kernel do
+  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer, length: length}, %Instruction{operation: {module, func}, params: params}) when module == Kernel do
     result = apply_operation(
       module,
       func,
       handle_params(Enum.drop(params, -1), sequence)
     )
-    %Day5{sequence: handle_result(result, sequence, List.last(params)), input: input, output: output, pointer: pointer + 4}
+    %Day5{sequence: handle_result(result, sequence, List.last(params)), input: input, output: output, pointer: pointer + 4, length: length}
   end
 
-  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer}, %Instruction{operation: {module, func}, params: [{verb, _}]}) when module == Operations do
+  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer, length: length}, %Instruction{operation: {module, func}, params: [{verb, _}]}) when module == Operations do
     case func do
-      :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2}
-      :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2}
+      :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2, length: length}
+      :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2, length: length}
     end
   end
 
@@ -35,6 +35,7 @@ defmodule Day5.Operations do
     [handle_param(param, sequence)] ++ handle_params(params, sequence)
   end
 
+  @spec handle_param({any, :immediate | :position}, any) :: any
   def handle_param({val, mode}, sequence) do
     case mode do
     :position -> Enum.at(sequence, val)
