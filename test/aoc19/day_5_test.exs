@@ -10,15 +10,31 @@ defmodule Day5Test do
 
   end
 
+  describe "instruction" do
+    @describetag :unit
+
+    test "output" do
+      assert Day5.Instruction.handle_instruction([1002, 1, 3, 2]) == %Day5.Instruction{
+        operation: :*,
+        params: [
+          {1, :position},
+          {3, :immediate},
+          {2, :position}
+        ]
+      }
+
+      assert Day5.Instruction.handle_instruction([103, 5]) == %Day5.Instruction{
+        operation: :store,
+        params: [
+          {5, :immediate}
+        ]
+      }
+    end
+  end
+
   describe "parsing" do
     @describetag :unit
 
-    test "modes" do
-      assert Day5.Parse.modes(101) == [:position, :position, :immediate]
-      assert Day5.Parse.modes(3) == [:position]
-      assert Day5.Parse.modes(103) == [:immediate]
-      assert Day5.Parse.modes(1002) == [:position, :immediate, :position]
-    end
   end
 
   describe "operations" do
