@@ -93,5 +93,23 @@ defmodule Day5Test do
         ]
       }) == %Day5{sequence: [4, 2, 0, 99], input: 0, output: [0, 0], pointer: 2}
     end
+
+    test "jump_if_true" do
+      assert Operations.do_operation(%Day5{sequence: [5, 2, 0], input: 0, pointer: 0}, %Instruction{
+        operation: {Operations, :jump_if_true},
+        params: [
+        {2, :position},
+        {0, :position}
+        ]
+      }) == %Day5{sequence: [5, 2, 0], input: 0, output: [], pointer: 3}
+
+      assert Operations.do_operation(%Day5{sequence: [1105, 2, 57], input: 0, pointer: 0}, %Instruction{
+        operation: {Operations, :jump_if_true},
+        params: [
+          {2, :immediate},
+          {57, :immediate}
+        ]
+      }) == %Day5{sequence: [1105, 2, 57], input: 0, output: [], pointer: 57}
+    end
   end
 end

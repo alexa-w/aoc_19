@@ -16,11 +16,19 @@ defmodule Day5.Operations do
     %Day5{sequence: handle_result(result, sequence, List.last(params)), input: input, output: output, pointer: pointer + 4, length: length}
   end
 
-  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer, length: length}, %Instruction{operation: {module, func}, params: [{verb, _}]}) when module == Operations do
+  def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer, length: length}, %Instruction{operation: {module, func}, params: params}) when module == Operations do
+    {verb, _} = params |> List.first
     case func do
       :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2, length: length}
       :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2, length: length}
-      # :jump_if_true -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_true(pointer, params)}
+      :jump_if_true -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_true(sequence, pointer, params)}
+    end
+  end
+
+  def jump_if_true(sequence, pointer, [condition, direction]) do
+    case handle_param(condition, sequence) do
+      0 -> pointer + 3
+      _ -> handle_param(direction, sequence)
     end
   end
 
