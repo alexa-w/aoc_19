@@ -22,6 +22,7 @@ defmodule Day5.Operations do
       :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2, length: length}
       :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2, length: length}
       :jump_if_true -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_true(sequence, pointer, params)}
+      :jump_if_false -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_false(sequence, pointer, params)}
     end
   end
 
@@ -29,6 +30,13 @@ defmodule Day5.Operations do
     case handle_param(condition, sequence) do
       0 -> pointer + 3
       _ -> handle_param(direction, sequence)
+    end
+  end
+
+  def jump_if_false(sequence, pointer, [condition, direction]) do
+    case handle_param(condition, sequence) do
+      0 -> handle_param(direction, sequence)
+      _ -> pointer + 3
     end
   end
 
