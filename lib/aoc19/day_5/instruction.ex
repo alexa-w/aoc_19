@@ -13,8 +13,8 @@ defmodule Day5.Instruction do
     "02": {Kernel, :*},
     "03": {Operations, :store},
     "04": {Operations, :output},
-    "04": {Operations, :jump_if_true},
-    "05": {Operations, :jump_if_false},
+    "05": {Operations, :jump_if_true},
+    "06": {Operations, :jump_if_false},
     "07": {Operations, :less_than},
     "08": {Operations, :equals}
   ]

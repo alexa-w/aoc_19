@@ -8,6 +8,10 @@ defmodule Day5.Operations do
 
   @spec do_operation(Day5.t(), Instruction.t()) :: Day5.t()
   def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer, length: length}, %Instruction{operation: {module, func}, params: params}) when module == Kernel do
+    IO.inspect(sequence)
+    IO.inspect(func)
+    IO.inspect(handle_params(params, sequence))
+    IO.inspect(pointer)
     result = apply_operation(
       module,
       func,
@@ -17,12 +21,19 @@ defmodule Day5.Operations do
   end
 
   def do_operation(%Day5{sequence: sequence, input: input, output: output, pointer: pointer, length: length}, %Instruction{operation: {module, func}, params: params}) when module == Operations do
-    {verb, _} = params |> List.first
+    {verb, _} = List.first(params)
+    IO.inspect(sequence)
+    IO.inspect(func)
+    IO.inspect(handle_params(params, sequence))
+    IO.inspect(pointer)
+    IO.puts("<____________________>")
     case func do
       :store -> %Day5{sequence: List.replace_at(sequence, verb, input), input: input, output: output, pointer: pointer + 2, length: length}
-      :output -> %Day5{sequence: sequence, input: input, output: output ++ [Enum.at(sequence, verb)], pointer: pointer + 2, length: length}
-      :jump_if_true -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_true(sequence, pointer, params)}
-      :jump_if_false -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_false(sequence, pointer, params)}
+      :output -> %Day5{sequence: sequence, input: input, output: output ++ [handle_param(List.first(params), sequence)], pointer: pointer + 2, length: length}
+      :jump_if_true -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_true(sequence, pointer, params), length: length}
+      :jump_if_false -> %Day5{sequence: sequence, input: input, output: output, pointer: jump_if_false(sequence, pointer, params), length: length}
+      :less_than -> %Day5{sequence: less_than(sequence, params), input: input, output: output, pointer: pointer + 4, length: length}
+      :equals -> %Day5{sequence: equals(sequence, params), input: input, output: output, pointer: pointer + 4, length: length}
     end
   end
 
@@ -37,6 +48,22 @@ defmodule Day5.Operations do
     case handle_param(condition, sequence) do
       0 -> handle_param(direction, sequence)
       _ -> pointer + 3
+    end
+  end
+
+  def less_than(sequence, [first, second, {direction, _}]) do
+    if handle_param(first, sequence) < handle_param(second, sequence) do
+      List.replace_at(sequence, direction, 1)
+    else
+      List.replace_at(sequence, direction, 0)
+    end
+  end
+
+  def equals(sequence, [first, second, {direction, _}]) do
+    if handle_param(first, sequence) == handle_param(second, sequence) do
+      List.replace_at(sequence, direction, 1)
+    else
+      List.replace_at(sequence, direction, 0)
     end
   end
 

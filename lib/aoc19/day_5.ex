@@ -50,6 +50,6 @@ defmodule Day5 do
 
   def day_5_solution do
     File.read!('bin/day_5')
-    |> marshal(1)
+    |> marshal(5)
   end
 end
