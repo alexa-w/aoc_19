@@ -12,7 +12,8 @@ defmodule OrbitMapTest do
 
     test "generates checksum" do
       assert OrbitMap.checksum(
-        "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L") == 42
+        ["COM)B", "B)C", "C)D", "D)E", "E)F", "B)G", "G)H", "D)I", "E)J", "J)K", "K)L"]
+      ) == 42
     end
   end
 end
